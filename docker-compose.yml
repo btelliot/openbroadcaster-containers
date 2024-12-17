@@ -1,0 +1,34 @@
+version: '3.8'
+
+services:
+  icecast:
+    image: moul/icecast
+    container_name: icecast-server
+    ports:
+      - "8000:8000"             # Expose Icecast on port 8000
+    environment:
+      - ICECAST_ADMIN_PASSWORD=admin
+      - ICECAST_SOURCE_PASSWORD=sourcepassword
+      - ICECAST_RELAY_PASSWORD=relaypassword
+      - ICECAST_PASSWORD=adminpassword
+    volumes:
+      - ./icecast/icecast.xml:/etc/icecast.xml   # Custom Icecast configuration
+    networks:
+      - media-network
+    restart: unless-stopped
+
+  obplayer:
+    build:
+      context: ./obplayer       # Build using Dockerfile in obplayer directory
+    container_name: ob-player
+    ports:
+      - "23233:23233"           # Expose obplayer admin interface
+    networks:
+      - media-network
+    restart: unless-stopped
+    depends_on:
+      - icecast                 # Start Icecast before obplayer
+
+networks:
+  media-network:
+    driver: bridge

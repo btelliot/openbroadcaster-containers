@@ -1,0 +1,42 @@
+<icecast>
+    <location>Earth</location>
+    <admin>icemaster@localhost</admin>
+    <hostname>localhost</hostname>
+
+    <limits>
+        <!-- Global maximum number of clients.
+             This includes all kinds of clients, not only listeners.
+        -->
+        <clients>100</clients>
+        <sources>2</sources>
+        <queue-size>524288</queue-size>
+        <client-timeout>30</client-timeout>
+        <header-timeout>15</header-timeout>
+        <source-timeout>10</source-timeout>
+        <!-- This sets the burst size in [bytes]. This is the amount the
+             the server sends to a listener that connects to a stream.
+             This allows for a significantly reducing in startup time.
+             Most people won't need to change from the default 64k.
+             Applies to all mountpoints.
+        -->
+        <burst-size>65535</burst-size>
+    </limits>
+
+    <authentication>
+        <!-- Sources log in with username 'source' -->
+        <source-password>password</source-password>
+        <!-- Relays log in with username 'relay' -->
+        <relay-password>password</relay-password>
+
+        <!-- Admin logs in with the username given below -->
+        <admin-user>admin</admin-user>
+        <admin-password>password</admin-password>
+    </authentication>
+
+    <listen-socket>
+        <port>8000</port>
+        <!-- <bind-address>127.0.0.1</bind-address> -->
+        <!-- <shoutcast-mount>/stream</shoutcast-mount> -->
+    </listen-socket>
+ 
+</icecast>
