@@ -28,7 +28,40 @@ services:
     restart: unless-stopped
     depends_on:
       - icecast                 # Start Icecast before obplayer
+      
+  mysql-db:
+    container_name: mysql-db
+    restart: always
+    build:
+      context: ./mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: obdb
+      MYSQL_USER: obsuser
+      MYSQL_PASSWORD: password
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - media-network
+      
+  ob-server:
+    restart: always
+    container_name: ob-server
+    depends_on:
+      - mysql-db
+    build:
+      context: ./observer
+    ports:
+      - "8080:80"
+    networks:
+      - media-network
 
+volumes:
+  mysql-data:
+      
+      
 networks:
   media-network:
     driver: bridge
