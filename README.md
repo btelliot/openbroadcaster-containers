@@ -44,22 +44,23 @@ docker-compose up --build
 ### 3. Access the Services
 
 - **Observer Web Interface**:
-  Access the Observer service at [http://localhost:8080](http://localhost:8080).
-  Default username and password defined in .env.
-  Default username: admin
-  Default password: password
+   - Access the Observer service at [http://localhost:8080](http://localhost:8080).
+   - Default username and password defined in .env.
+   - Default username: admin
+   - Default password: password
   
 - **Obplayer Web Interface**:
-  Access the Obplayer web interface at [http://localhost:23233](http://localhost:23233).
-  Access the Liveassist dashboard at [http://localhost:23456](http://localhost:23456).
-  Default username: admin
-  Default password: admin
+   - Access the Obplayer web interface at [http://localhost:23233](http://localhost:23233).
+   - Access the Live assist dashboard at [http://localhost:23456](http://localhost:23456).
+   - Default username: admin
+   - Default password: admin
 
 - **Icecast Streaming Server**:
-  Access the Icecast server at [http://localhost:8000](http://localhost:8000).
-  Default username and password defined in icecast.xml.
-  Default username: admin
-  Default password: hackme
+   - Access the Icecast server at [http://localhost:8000](http://localhost:8000).
+   - Preview the stream at [http://localhost:8000/stream](http://localhost:8000/stream).
+   - Default username and password defined in icecast.xml.
+   - Default username: admin
+   - Default password: hackme
   
 - **MySQL Database**:
   Connect to the MySQL database using your preferred client. The configuration details are in the `mysql` directory or environment variables defined in `docker-compose.yml`.
@@ -69,26 +70,52 @@ docker-compose up --build
 ### 4. First run
 
 - **Upload Media**:
-- Login to Observer service at `http://localhost:8080`.
-   - Media > Upload media
-   - Upload some MP3 files, and fill out the metadata.  Hit save.
+  - Login to Observer service at `http://localhost:8080`.
+    - Media > Upload media
+    - Upload some MP3 files, and fill out the metadata.  Hit save.
   
 - **Create playlist**:
-- From the Observer service at `http://localhost:8080`.
-   - Playlists > New Playlist
-	 - Fill out the playlist data, and drag media items in.
-
+  - From the Observer service at `http://localhost:8080`.
+     - Playlists > New Playlist
+    - Fill out the playlist data, and drag media items in.
 
 - **Provision the Player**:
-- From the Observer service at `http://localhost:8080`.
-   - Admin > Player Manager > New
-   - Name = Obplayer
-   - IP Address - leave blank
-   - Password = 'password'
-   - Media Types: Check all.
-   - Timezone: (GMT-07:00) Pacific Time (Yukon)
-   - Default Playlist: Your playlist you just created.
+  - From the Observer service at `http://localhost:8080`.
+    - Admin > Player Manager > New
+    - Name = Obplayer
+    - IP Address - leave blank
+    - Password = 'password'
+    - Media Types: Check all.
+    - Timezone: (GMT-07:00) Pacific Time (Yukon)
+    - Default Playlist: Your playlist you just created.
   
+- **Enable and verify sync**:
+  - From the Obplayer web interface at `http://localhost:23233`.
+    - On the `Sync/Media` tab
+    - Enable Scheduler/Sync [x]
+    - Device ID = 1
+    - Device Password = 'password'
+    - Sync URL = `http://192.168.100.5/remote.php`.
+    - Hit Save
+    - Hit `Restart`
+    - On the `Status` tab, check the [x] sync box, and make sure the server is connected.
+    - The Audio Stream should show your media playing.
+    - You can also enable the LiveAssist Dashboard from `Live Assist` > [x] Enable Live Assist
+    - View the Live assist page `http://localhost:23456`
+
+- **Verify Stream**:
+  - From the Obplayer web interface at `http://localhost:23233`.
+    - On the `Streaming` tab
+    - Enable Streaming [x]
+    - Enable Icecast Streaming [x]
+    - Icecast (One) Output Mode = Audio Only
+    - Icecast (One) Output Bitrate = 320 kbps
+    - Icecast (One) IP = 192.168.100.2
+    - Icecast (One) Port = 8000
+    - Icecast (One) Mountpoint = stream
+    - Icecast (One) Username = source
+    - Icecast (One) password = hackme
+  - Preview the stream at http://localhost:8000/stream
   
 
 ## **Environment Variables**
