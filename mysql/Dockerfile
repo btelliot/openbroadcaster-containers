@@ -7,8 +7,8 @@ WORKDIR /app
 
 RUN apt-get update -y && apt-get install -y git
 
-ARG BRANCH
-ENV BRANCH=5.3-develop
+ARG BRANCH=5.3-develop
+ENV BRANCH=$BRANCH
 
 RUN git clone $REPOSITORY .
 RUN git checkout $BRANCH

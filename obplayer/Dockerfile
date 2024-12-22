@@ -36,6 +36,13 @@ RUN git clone https://github.com/openbroadcaster/obplayer/ /usr/local/lib/obplay
     cd /usr/local/lib/obplayer && \
     git checkout 5.3-staging
 
+# Install CURL for network debugging
+RUN apt-get update && apt-get install -y \
+	curl iputils-ping
+
+# Modify the regex in data.py to explicitly allow ob-server in the url_regex definition
+RUN sed -i '/url_regex = re.compile/,/re.IGNORECASE/s/localhost|/localhost|ob-server|/' usr/local/lib/obplayer/obplayer/data.py
+
 # BUGFIX
 RUN find . -type f -name "*.py" -exec sed -i 's/self.pipeline = Gst.Pipeline(name)/self.pipeline = Gst.Pipeline.new(name)/g' {} +
 
@@ -49,6 +56,7 @@ EXPOSE 80
 EXPOSE 443
 EXPOSE 465
 EXPOSE 25
+EXPOSE 23456
 
 # run container 
 #docker run -d --rm -p 23233:23233 --name ob-player ob-player

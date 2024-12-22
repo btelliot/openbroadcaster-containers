@@ -22,9 +22,9 @@ tools/cli/ob updates run all
 
 echo "[INFO] Updating password"
 #php /var/www/html/tools/password_change.php "admin" "password"
-tools/cli/ob passwd admin << EOF
-password
-password
+tools/cli/ob passwd $OB_UPDATES_USER << EOF
+$OB_UPDATES_PW
+$OB_UPDATES_PW
 EOF
 
 nginx -g 'daemon off;' &

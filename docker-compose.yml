@@ -1,20 +1,17 @@
 version: '3.8'
 
 services:
+
   icecast:
     image: moul/icecast
     container_name: icecast-server
     ports:
       - "8000:8000"             # Expose Icecast on port 8000
-    environment:
-      - ICECAST_ADMIN_PASSWORD=admin
-      - ICECAST_SOURCE_PASSWORD=sourcepassword
-      - ICECAST_RELAY_PASSWORD=relaypassword
-      - ICECAST_PASSWORD=adminpassword
     volumes:
       - ./icecast/icecast.xml:/etc/icecast.xml   # Custom Icecast configuration
     networks:
-      - media-network
+      media-network:
+        ipv4_address: 192.168.100.2
     restart: unless-stopped
 
   obplayer:
@@ -23,8 +20,10 @@ services:
     container_name: ob-player
     ports:
       - "23233:23233"           # Expose obplayer admin interface
+      - "23456:23456"
     networks:
-      - media-network
+      media-network:
+        ipv4_address: 192.168.100.3
     restart: unless-stopped
     depends_on:
       - icecast                 # Start Icecast before obplayer
@@ -34,34 +33,52 @@ services:
     restart: always
     build:
       context: ./mysql
-    environment:
-      MYSQL_ROOT_PASSWORD: password
-      MYSQL_DATABASE: obdb
-      MYSQL_USER: obsuser
-      MYSQL_PASSWORD: password
+      args:
+        REPOSITORY: ${REPOSITORY}
+        BRANCH: ${BRANCH}
     ports:
       - "3306:3306"
     volumes:
       - mysql-data:/var/lib/mysql
     networks:
-      - media-network
+      media-network:
+        ipv4_address: 192.168.100.4
       
   ob-server:
     restart: always
     container_name: ob-server
     depends_on:
-      - mysql-db
+      - mysql-db # Start mysql-db before observer
     build:
       context: ./observer
+      args:
+        USER: ${USER}
+        OBCONF_PASS: ${OBCONF_PASS}
+        OBCONF_EMAIL: ${OBCONF_EMAIL}
+        MYSQL_PASS: ${MYSQL_PASS}
+        OB_DB_HOST: ${OB_DB_HOST}
+        OB_DB_PASS: ${OB_DB_PASS}
+        OB_DB_NAME: ${OB_DB_NAME}
+        OBCONF_URL: ${OBCONF_URL}
+        OBCONF_SALT: ${OBCONF_SALT}
+        OB_UPDATES_USER: ${OB_UPDATES_USER}
+        OB_UPDATES_PW: ${OB_UPDATES_PW}
+        REPOSITORY: ${REPOSITORY}
+        BRANCH: ${BRANCH}
+        MODULE_NAMES: ${MODULE_NAMES}
+        MODULE_REPOSITORIES: ${MODULE_REPOSITORIES}
     ports:
       - "8080:80"
     networks:
-      - media-network
+      media-network:
+        ipv4_address: 192.168.100.5
 
 volumes:
   mysql-data:
       
-      
 networks:
   media-network:
     driver: bridge
+    ipam:
+      config:
+        - subnet: 192.168.100.0/24
