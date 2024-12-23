@@ -168,8 +168,13 @@ RUN sed -i '/http {/a \    types {\n        application/javascript mjs;\n    }' 
 RUN echo "NGINX is working!" > /var/www/html/test.html
 RUN echo "<?php phpinfo();" > /var/www/html/test.php
 
-# iputils for testing connection to mysql
-#RUN apt-get update && apt-get install -y iputils-ping
+# Install VS Code
+RUN apt-get update && apt-get install -y wget gpg && \
+    wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > packages.microsoft.gpg && \
+    install -o root -g root -m 644 packages.microsoft.gpg /usr/share/keyrings/ && \
+    sh -c 'echo "deb [arch=amd64 signed-by=/usr/share/keyrings/packages.microsoft.gpg] https://packages.microsoft.com/repos/code stable main" > /etc/apt/sources.list.d/vscode.list' && \
+    apt-get update && apt-get install -y code && \
+    rm packages.microsoft.gpg
 
 # Copy over observer.conf and startup script
 COPY ./observer.conf /etc/nginx/sites-enabled/

@@ -2,6 +2,10 @@
 
 This repository provides a containerized setup for running OpenBroadcaster and its supporting components, using Docker and Docker Compose. It is meant for development purposes, and not to be used in a production environment.
 
+Tested and working with 5.3-develop branches as of 2024-12-22.
+ - [https://github.com/openbroadcaster/observer](https://github.com/openbroadcaster/observer)
+ - [https://github.com/openbroadcaster/obplayer](https://github.com/openbroadcaster/obplayer)
+
 ---
 
 ## **Contents**
