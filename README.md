@@ -41,7 +41,7 @@ Use Docker Compose to build and run the containers:
 docker-compose up --build
 ```
 
-### 3. Access the Services
+### 3. Default URLs and credentials
 
 - **Observer Web Interface**:
    - Access the Observer service at [http://localhost:8080](http://localhost:8080).
@@ -62,15 +62,15 @@ docker-compose up --build
    - Default username: admin
    - Default password: hackme
   
-- **MySQL Database**:
-  Connect to the MySQL database using your preferred client. The configuration details are in the `mysql` directory or environment variables defined in `docker-compose.yml`.
-
 ---
 
 ### 4. First run
 
-- **Upload Media**:
-  - Login to Observer service at `http://localhost:8080`.
+- **Upload Media to OBserver Web Interface**:
+  - Login to Observer service at [http://localhost:8080](http://localhost:8080).
+    - Default username and password defined in .env.
+    - Default username: admin
+    - Default password: password
     - Media > Upload media
     - Upload some MP3 files, and fill out the metadata.  Hit save.
   
@@ -91,6 +91,15 @@ docker-compose up --build
   
 - **Enable and verify sync**:
   - From the Obplayer web interface at `http://localhost:23233`.
+    - On the `Admin` tab
+    - Import Settings > Choose File `/obplayer/obsettings.txt` > Import
+    - Delete data.db and Restart `Restart`
+    - Player should sync with server and icecast.
+  - View the Live assist page `http://localhost:23456`
+  - Preview the stream at `http://localhost:8000/stream`
+- **Setup Complete**:
+
+- **If needed - Manually Configure Sync**:
     - On the `Sync/Media` tab
     - Enable Scheduler/Sync [x]
     - Device ID = 1
@@ -103,7 +112,7 @@ docker-compose up --build
     - You can also enable the LiveAssist Dashboard from `Live Assist` > [x] Enable Live Assist
     - View the Live assist page `http://localhost:23456`
 
-- **Verify Stream**:
+- **If needed - Manually Configure Icecast Stream**:
   - From the Obplayer web interface at `http://localhost:23233`.
     - On the `Streaming` tab
     - Enable Streaming [x]
@@ -115,7 +124,7 @@ docker-compose up --build
     - Icecast (One) Mountpoint = stream
     - Icecast (One) Username = source
     - Icecast (One) password = hackme
-  - Preview the stream at http://localhost:8000/stream
+  - Preview the stream at `http://localhost:8000/stream`
   
 
 ## **Environment Variables**

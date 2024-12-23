@@ -67,6 +67,8 @@ services:
         BRANCH: ${BRANCH}
         MODULE_NAMES: ${MODULE_NAMES}
         MODULE_REPOSITORIES: ${MODULE_REPOSITORIES}
+    volumes:
+      - ob-server-home:/home
     ports:
       - "8080:80"
     networks:
@@ -75,6 +77,7 @@ services:
 
 volumes:
   mysql-data:
+  ob-server-home:
       
 networks:
   media-network:

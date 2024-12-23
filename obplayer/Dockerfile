@@ -43,11 +43,24 @@ RUN apt-get update && apt-get install -y \
 # Modify the regex in data.py to explicitly allow ob-server in the url_regex definition
 RUN sed -i '/url_regex = re.compile/,/re.IGNORECASE/s/localhost|/localhost|ob-server|/' usr/local/lib/obplayer/obplayer/data.py
 
+# Allow passwords to be exported
+RUN sed -i 's/obplayer.Config.list_settings(hidepasswords=True).items()/obplayer.Config.list_settings(hidepasswords=False).items()/' usr/local/lib/obplayer/obplayer/httpadmin/httpadmin.py
+
 # BUGFIX
 RUN find . -type f -name "*.py" -exec sed -i 's/self.pipeline = Gst.Pipeline(name)/self.pipeline = Gst.Pipeline.new(name)/g' {} +
 
 # Set working directory and provide executable entry
 WORKDIR /usr/local/lib/obplayer
+
+# Mount settings file
+COPY obsettings.txt /app/obsettings.txt
+
+# Startup script to import settings
+COPY import_and_reset.py /usr/local/lib/obplayer/import_and_reset.py
+RUN chmod +x /usr/local/lib/obplayer/import_and_reset.py
+
+# Run import settings script
+CMD ["python3", "/usr/local/lib/obplayer/import_and_reset.py"]
 
 # Entry point for container
 ENTRYPOINT /bin/bash ./obplayer_loop -H -d
@@ -57,7 +70,3 @@ EXPOSE 443
 EXPOSE 465
 EXPOSE 25
 EXPOSE 23456
-
-# run container 
-#docker run -d --rm -p 23233:23233 --name ob-player ob-player
-#localhost:23233, username: admin, pw: admin
